@@ -126,6 +126,8 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      *
      * @since [*next-version*]
      *
+     * @param mixed $value The element to check.
+     *
      * @return bool True of the element has children; false otherwise.
      */
     abstract protected function _isElementHasChildren($value);
