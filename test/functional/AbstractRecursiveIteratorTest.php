@@ -42,6 +42,7 @@ class AbstractRecursiveIteratorTest extends TestCase
                 })
                 ->_isMode()
                 ->_isElementHasChildren()
+                ->_getElementChildren()
                 ->new();
 
         return $mock;
