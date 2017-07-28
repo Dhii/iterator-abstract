@@ -113,7 +113,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      */
     protected function &_getCurrentIterable()
     {
-        $iterable =& $this->_getTopmostParent();
+        $iterable = &$this->_getTopmostParent();
 
         return $iterable;
     }
@@ -131,7 +131,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
         }
 
         // Get current top item on the stack and its current iteration entry
-        $parent  =& $this->_getCurrentIterable();
+        $parent  = &$this->_getCurrentIterable();
         $current = $this->_createCurrentIteration($parent);
 
         // Reached end of current iterable
@@ -154,6 +154,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
         if ($this->_isMode(R::MODE_SELF_FIRST)) {
             return $current;
         }
+
         return $this->_loop();
     }
 
@@ -172,7 +173,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
             return $this->_createIteration(null, null);
         }
 
-        $parent  =& $this->_getCurrentIterable();
+        $parent  = &$this->_getCurrentIterable();
         $current = $this->_createCurrentIteration($parent);
         next($parent);
 
@@ -192,7 +193,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
     {
         $this->_resetParents();
 
-        $iterable =& $this->_getInitialParentIterable();
+        $iterable = &$this->_getInitialParentIterable();
 
         reset($iterable);
         $this->_pushParent($iterable);
