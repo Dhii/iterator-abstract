@@ -156,7 +156,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      *
      * @return IterationInterface
      */
-    protected function _createCurrentIteration($iterable)
+    protected function _createCurrentIteration(&$iterable)
     {
         return $this->_createIteration(
             $this->_getCurrentIterableKey($iterable),
@@ -173,7 +173,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      *
      * @return mixed The current key.
      */
-    protected function _getCurrentIterableKey($iterable)
+    protected function _getCurrentIterableKey(&$iterable)
     {
         return key($iterable);
     }
@@ -187,7 +187,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      *
      * @return mixed The current value.
      */
-    protected function _getCurrentIterableValue($iterable)
+    protected function _getCurrentIterableValue(&$iterable)
     {
         return current($iterable);
     }
