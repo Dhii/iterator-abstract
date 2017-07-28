@@ -133,6 +133,17 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
     abstract protected function _isElementHasChildren($value);
 
     /**
+     * Retrieves the children of a element.
+     *
+     * @since [*next-version*]
+     *
+     * @param mixed $value The element whose children to retrieve.
+     *
+     * @return array|Traversable The children of the element.
+     */
+    abstract protected function _getElementChildren($value);
+
+    /**
      * Determines if the currently selected modes include a specific mode.
      *
      * @since [*next-version*]
