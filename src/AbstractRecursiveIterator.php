@@ -2,6 +2,7 @@
 
 namespace Dhii\Iterator;
 
+use Dhii\Iterator\RecursiveIteratorInterface as R;
 use Iterator;
 use Traversable;
 
@@ -124,7 +125,62 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      */
     protected function _loop()
     {
-        // More complex logic goes here
+        // Ensure that there are items on the stack
+        if (!$this->_hasParents()) {
+            return $this->_createIteration(null, null);
+        }
+
+        // Get current top item on the stack and its current iteration entry
+        $parent  =& $this->_getCurrentIterable();
+        $current = $this->_createCurrentIteration($parent);
+
+        // Reached end of current iterable
+        if ($current->getKey() === null) {
+            return $this->_backtrackLoop();
+        }
+
+        // Element is a leaf
+        if (!$this->_isElementHasChildren($current->getValue())) {
+            next($parent);
+
+            return $current;
+        }
+
+        // Element is not a leaf; push to stack
+        $children = $this->_getElementChildren($current->getValue());
+        reset($children);
+        $this->_pushParent($children);
+
+        if ($this->_isMode(R::MODE_SELF_FIRST)) {
+            return $current;
+        }
+        return $this->_loop();
+    }
+
+    /**
+     * Backtracks up one parent, yielding the parent or resuming the loop, whichever is appropriate.
+     *
+     * @since [*next-version*]
+     *
+     * @return IterationInterface
+     */
+    protected function _backtrackLoop()
+    {
+        $this->_popParent();
+
+        if (!$this->_hasParents()) {
+            return $this->_createIteration(null, null);
+        }
+
+        $parent  =& $this->_getCurrentIterable();
+        $current = $this->_createCurrentIteration($parent);
+        next($parent);
+
+        if ($this->_isMode(R::MODE_CHILD_FIRST)) {
+            return $current;
+        }
+
+        return $this->_loop();
     }
 
     /**
@@ -134,7 +190,14 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      */
     protected function _reset()
     {
-        // More complex logic goes here
+        $this->_resetParents();
+
+        $iterable =& $this->_getInitialParentIterable();
+
+        reset($iterable);
+        $this->_pushParent($iterable);
+
+        return $this->_loop();
     }
 
     /**
@@ -191,6 +254,17 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
     {
         return current($iterable);
     }
+
+    /**
+     * Retrieves the initial parent iterable.
+     *
+     * The initial parent is the top-most iterable that will be pushed on to the stack when the iterator is reset.
+     *
+     * @since [*next-version*]
+     *
+     * @return array|Traversable
+     */
+    abstract protected function &_getInitialParentIterable();
 
     /**
      * Determines if an element has children that this iterator could recurse into.
