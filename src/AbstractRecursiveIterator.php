@@ -117,7 +117,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      */
     protected function _valid()
     {
-        return count($this->stack) > 0;
+        return count($this->parents) > 0;
     }
 
     /**
