@@ -3,6 +3,7 @@
 namespace Dhii\Iterator;
 
 use Iterator;
+use Traversable;
 
 /**
  * Common functionality for iterators which visit nodes more than 1 level deep.
@@ -139,16 +140,4 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      * @return bool True if mode selected; otherwise, false.
      */
     abstract protected function _isMode($mode);
-
-    /**
-     * {@inheritdoc}
-     *
-     * @since [*next-version*]
-     */
-    protected function &_getCurrentIterable()
-    {
-        $parent =& $this->_getLatestParent();
-
-        return $parent;
-    }
 }
