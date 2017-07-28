@@ -34,7 +34,7 @@ abstract class AbstractIterator
      */
     protected function _next()
     {
-        $this->_loop();
+        $this->_setIteration($this->_loop());
 
         return $this;
     }
