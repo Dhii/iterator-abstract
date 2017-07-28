@@ -148,6 +148,51 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
     }
 
     /**
+     * Creates an iteration instance for the current state of a given iterable.
+     *
+     * @since [*next-version*]
+     *
+     * @param array|Traversable $iterable The iterable.
+     *
+     * @return IterationInterface
+     */
+    protected function _createCurrentIteration($iterable)
+    {
+        return $this->_createIteration(
+            $this->_getCurrentIterableKey($iterable),
+            $this->_getCurrentIterableValue($iterable)
+        );
+    }
+
+    /**
+     * Retrieves the key for the current element of an iterable.
+     *
+     * @since [*next-version*]
+     *
+     * @param array|Traversable $iterable The iterable.
+     *
+     * @return mixed The current key.
+     */
+    protected function _getCurrentIterableKey($iterable)
+    {
+        return key($iterable);
+    }
+
+    /**
+     * Retrieves the value for the current element of an iterable.
+     *
+     * @since [*next-version*]
+     *
+     * @param array|Traversable $iterable The iterable.
+     *
+     * @return mixed The current value.
+     */
+    protected function _getCurrentIterableValue($iterable)
+    {
+        return current($iterable);
+    }
+
+    /**
      * Determines if an element has children that this iterator could recurse into.
      *
      * @since [*next-version*]
