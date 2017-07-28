@@ -104,6 +104,20 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
     }
 
     /**
+     * Retrieves the iterable that this iterator should be iterating over.
+     *
+     * @since [*next-version*]
+     *
+     * @return Traversable|array The iterable.
+     */
+    protected function &_getCurrentIterable()
+    {
+        $iterable =& $this->_getTopmostParent();
+
+        return $iterable;
+    }
+
+    /**
      * {@inheritdoc}
      *
      * @since [*next-version*]
