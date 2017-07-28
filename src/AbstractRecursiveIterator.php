@@ -59,6 +59,18 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
     }
 
     /**
+     * Checks if there are iterable parents on the stack.
+     *
+     * @since [*next-version*]
+     *
+     * @return bool True if there is at least one iterable parent on the stack, false if there are none.
+     */
+    protected function _hasParents()
+    {
+        return count($this->parents) > 0;
+    }
+
+    /**
      * Returns the parent stack to its original state.
      *
      * @since [*next-version*]
@@ -118,7 +130,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      */
     protected function _valid()
     {
-        return count($this->parents) > 0;
+        return $this->_hasParents();
     }
 
     /**
