@@ -85,7 +85,7 @@ abstract class AbstractIterator
      */
     protected function _key()
     {
-        return $this->_getIteration()->key();
+        return $this->_getIteration()->getKey();
     }
 
     /**
@@ -98,7 +98,7 @@ abstract class AbstractIterator
      */
     protected function _value()
     {
-        return $this->_getIteration()->value();
+        return $this->_getIteration()->getValue();
     }
 
     /**
