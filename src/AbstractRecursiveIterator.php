@@ -78,12 +78,13 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      *
      * @return array|Iterator The iterable parent.
      */
-    protected function _getTopmostParent()
+    protected function &_getTopmostParent()
     {
         if (isset($this->parents[0])) {
             return $this->parents[0];
         }
 
+        // Only variables may be returned by reference
         $empty = [];
 
         return $empty;
