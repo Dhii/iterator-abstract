@@ -5,9 +5,7 @@ namespace Dhii\Iterator\UnitTest;
 use Xpmock\TestCase;
 
 /**
- * Tests {@see Dhii\Iterator\AbstractIterator}.
- *
- * @TODO Search and replace tokens that begin with underscore.
+ * Tests {@see \Dhii\Iterator\AbstractIterator}.
  *
  * @since [*next-version*]
  */
@@ -25,7 +23,7 @@ class AbstractIteratorTest extends TestCase
      *
      * @since [*next-version*]
      *
-     * @return Dhii\Iterator\AbstractIterator
+     * @return \Dhii\Iterator\AbstractIterator
      */
     public function createInstance($data = array(), $key = null)
     {

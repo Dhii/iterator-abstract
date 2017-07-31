@@ -5,9 +5,7 @@ namespace Dhii\Iterator\FuncTest;
 use Xpmock\TestCase;
 
 /**
- * Tests {@see Dhii\Iterator\AbstractRecursiveIterator}.
- *
- * @TODO Search and replace tokens that begin with underscore.
+ * Tests {@see \Dhii\Iterator\AbstractRecursiveIterator}.
  *
  * @since [*next-version*]
  */
@@ -25,7 +23,7 @@ class AbstractRecursiveIteratorTest extends TestCase
      *
      * @since [*next-version*]
      *
-     * @return Dhii\Iterator\AbstractRecursiveIterator
+     * @return \Dhii\Iterator\AbstractRecursiveIterator
      */
     public function createInstance($data = array(), $key = null)
     {
