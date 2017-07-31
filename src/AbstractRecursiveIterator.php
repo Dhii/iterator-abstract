@@ -246,7 +246,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      *
      * @param array|Traversable $iterable The iterable.
      *
-     * @return mixed The current key.
+     * @return string|int|null The current key.
      */
     protected function _getCurrentIterableKey(&$iterable)
     {
