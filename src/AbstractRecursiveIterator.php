@@ -23,6 +23,15 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
     protected $parents;
 
     /**
+     * The path segments made up of the keys of the parents on the stack.
+     *
+     * @since [*next-version*]
+     *
+     * @var array
+     */
+    protected $pathSegments;
+
+    /**
      * Resets the values.
      *
      * @since [*next-version*]
@@ -44,7 +53,11 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      */
     protected function _pushParent(&$parent)
     {
-        array_unshift($this->parents, $parent);
+        $children = &$this->_getElementChildren($parent);
+        reset($children);
+
+        array_unshift($this->parents, $children);
+        array_push($this->pathSegments, $this->_getElementPathSegment(null, $parent));
     }
 
     /**
@@ -57,6 +70,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
     protected function _popParent()
     {
         array_shift($this->parents);
+        array_pop($this->pathSegments);
     }
 
     /**
@@ -80,7 +94,8 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      */
     protected function _resetParents()
     {
-        $this->parents = [];
+        $this->parents      = [];
+        $this->pathSegments = [];
 
         return $this;
     }
@@ -147,8 +162,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
         }
 
         // Element is not a leaf; push to stack
-        $children = $this->_getElementChildren($current->getValue());
-        reset($children);
+        $children = $current->getValue();
         $this->_pushParent($children);
 
         if ($this->_isMode(R::MODE_SELF_FIRST)) {
@@ -192,11 +206,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
     protected function _reset()
     {
         $this->_resetParents();
-
-        $iterable = &$this->_getInitialParentIterable();
-
-        reset($iterable);
-        $this->_pushParent($iterable);
+        $this->_pushParent($this->_getInitialParentIterable());
 
         return $this->_loop();
     }
@@ -222,11 +232,11 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      */
     protected function _createCurrentIteration(&$iterable)
     {
-        return $this->_createIteration(
-            $this->_getCurrentIterableKey($iterable),
-            $this->_getCurrentIterableValue($iterable),
-            $this->_getCurrentPath()
-        );
+        $key  = $this->_getCurrentIterableKey($iterable);
+        $val  = $this->_getCurrentIterableValue($iterable);
+        $path = $this->_getCurrentPath($key, $val);
+
+        return $this->_createIteration($key, $val, $path);
     }
 
     /**
@@ -262,52 +272,53 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      *
      * @since [*next-version*]
      *
+     * @param string|int $key   The current element key.
+     * @param mixed      $value The current element value.
+     *
      * @return array
      */
-    protected function _getCurrentPath()
+    protected function _getCurrentPath($key, $value)
     {
-        $path = [];
+        $path   = $this->pathSegments;
+        $path[] = $this->_getElementPathSegment($key, $value);
 
-        foreach ($this->parents as $parent) {
-            $path[] = $this->_getPathSegmentForParent($parent);
-        }
-
-        return $path;
+        return array_filter($path);
     }
+
+    /**
+     * Retrieves the single path segment for a specific element.
+     *
+     * @since [*next-version*]
+     *
+     * @param string|int $key   The element key.
+     * @param mixed      $value The element value.
+     *
+     * @return string|null The path segment string or null for no path segment.
+     */
+    abstract protected function _getElementPathSegment($key, $value);
 
     /**
      * {@inheritdoc}
      *
      * @since [*next-version*]
      */
-    protected function _createIteration($key, $value, $path = [])
+    protected function _createIteration($key, $value, $pathSegments = [])
     {
-        return $this->_createRecursiveIteration($key, $value, $path);
+        return $this->_createRecursiveIteration($key, $value, $pathSegments);
     }
-
-    /**
-     * Gets the path segment for a parent.
-     *
-     * @since [*next-version*]
-     *
-     * @param mixed $parent The parent iterable element.
-     *
-     * @return string
-     */
-    abstract protected function _getPathSegmentForParent($parent);
 
     /**
      * Creates a new iteration.
      *
      * @since [*next-version*]
      *
-     * @param string|int $key   The iteration key.
-     * @param mixed      $value The iteration value.
-     * @param array      $path  The path.
+     * @param string|int $key          The iteration key.
+     * @param mixed      $value        The iteration value.
+     * @param array      $pathSegments The path.
      *
      * @return IterationInterface The new iteration.
      */
-    abstract protected function _createRecursiveIteration($key, $value, $path = []);
+    abstract protected function _createRecursiveIteration($key, $value, $pathSegments = []);
 
     /**
      * Retrieves the initial parent iterable.
@@ -340,7 +351,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      *
      * @return array|Traversable The children of the element.
      */
-    abstract protected function _getElementChildren($value);
+    abstract protected function &_getElementChildren($value);
 
     /**
      * Determines if the currently selected modes include a specific mode.
