@@ -80,7 +80,8 @@ class AbstractRecursiveIteratorTest extends TestCase
         $_getTopmostParent = new \ReflectionMethod(static::TEST_SUBJECT_CLASSNAME, '_getTopmostParent');
         $_getTopmostParent->setAccessible(true);
 
-        $_subject->parents = [];
+        $_subject->parents      = [];
+        $_subject->pathSegments = [];
 
         $result1 = $_subject->_getTopmostParent();
         $this->assertEmpty($result1, 'Wrong initial top-most parent');

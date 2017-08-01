@@ -43,6 +43,40 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
     }
 
     /**
+     * Retrieves the current path segments.
+     *
+     * @since [*next-version*]
+     *
+     * @return array
+     */
+    protected function _getPathSegments()
+    {
+        return $this->pathSegments;
+    }
+
+    /**
+     * Pushes a path segment to the path stack.
+     *
+     * @since [*next-version*]
+     *
+     * @param string $segment The path segment to add.
+     */
+    protected function _pushPathSegment($segment)
+    {
+        array_push($this->pathSegments, $segment);
+    }
+
+    /**
+     * Removes the last added path segment from the path stack.
+     *
+     * @since [*next-version*]
+     */
+    protected function _popPathSegment()
+    {
+        array_pop($this->pathSegments);
+    }
+
+    /**
      * Adds an iterable parent onto the stack.
      * 
      * The stack is there to maintain a trace of hierarchy.
@@ -53,11 +87,13 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      */
     protected function _pushParent(&$parent)
     {
-        $children = &$this->_getElementChildren($parent);
-        reset($children);
+        $children    = &$this->_getElementChildren($parent);
+        $pathSegment = $this->_getElementPathSegment(null, $parent);
 
+        $this->_pushPathSegment($pathSegment);
+
+        reset($children);
         array_unshift($this->parents, $children);
-        array_push($this->pathSegments, $this->_getElementPathSegment(null, $parent));
     }
 
     /**
@@ -69,8 +105,9 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      */
     protected function _popParent()
     {
+        $this->_popPathSegment();
+
         array_shift($this->parents);
-        array_pop($this->pathSegments);
     }
 
     /**
