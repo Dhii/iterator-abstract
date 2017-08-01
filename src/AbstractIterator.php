@@ -134,7 +134,7 @@ abstract class AbstractIterator
      *
      * @throws InvalidArgumentException If not a valid iteration
      */
-    abstract protected function _setIteration($iteration);
+    abstract protected function _setIteration(IterationInterface $iteration = null);
 
     /**
      * Creates a new iteration.
