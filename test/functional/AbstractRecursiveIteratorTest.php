@@ -39,8 +39,12 @@ class AbstractRecursiveIteratorTest extends TestCase
                     return $data;
                 })
                 ->_isMode()
+                ->_getCurrentIterableKey()
+                ->_getCurrentIterableValue()
                 ->_isElementHasChildren()
-                ->_getElementChildren()
+                ->_getElementChildren(function ($element) {
+                    return $element;
+                })
                 ->_getElementPathSegment()
                 ->_createRecursiveIteration()
                 ->_getInitialParentIterable()

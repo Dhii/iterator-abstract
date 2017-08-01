@@ -277,34 +277,6 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
     }
 
     /**
-     * Retrieves the key for the current element of an iterable.
-     *
-     * @since [*next-version*]
-     *
-     * @param array|Traversable $iterable The iterable.
-     *
-     * @return string|int|null The current key.
-     */
-    protected function _getCurrentIterableKey(&$iterable)
-    {
-        return key($iterable);
-    }
-
-    /**
-     * Retrieves the value for the current element of an iterable.
-     *
-     * @since [*next-version*]
-     *
-     * @param array|Traversable $iterable The iterable.
-     *
-     * @return mixed The current value.
-     */
-    protected function _getCurrentIterableValue(&$iterable)
-    {
-        return current($iterable);
-    }
-
-    /**
      * Retrieves the current path.
      *
      * @since [*next-version*]
@@ -316,11 +288,33 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      */
     protected function _getCurrentPath($key, $value)
     {
-        $path   = $this->pathSegments;
+        $path   = $this->_getPathSegments();
         $path[] = $this->_getElementPathSegment($key, $value);
 
         return array_filter($path);
     }
+
+    /**
+     * Retrieves the key for the current element of an iterable.
+     *
+     * @since [*next-version*]
+     *
+     * @param array|Traversable $iterable The iterable.
+     *
+     * @return string|int|null The current key.
+     */
+    abstract protected function _getCurrentIterableKey(&$iterable);
+
+    /**
+     * Retrieves the value for the current element of an iterable.
+     *
+     * @since [*next-version*]
+     *
+     * @param array|Traversable $iterable The iterable.
+     *
+     * @return mixed The current value.
+     */
+    abstract protected function _getCurrentIterableValue(&$iterable);
 
     /**
      * Retrieves the single path segment for a specific element.
