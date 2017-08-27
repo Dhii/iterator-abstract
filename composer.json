@@ -19,7 +19,7 @@
         "ptrofimov/xpmock": "^1.1",
         "dhii/php-cs-fixer-config": "^0.1",
         "codeclimate/php-test-reporter": "<=0.3.2",
-        "dhii/iterator-interface": "dev-task/initial-interfaces"
+        "dhii/iterator-interface": "dev-release/0.1"
     },
     "autoload": {
         "psr-4": {
