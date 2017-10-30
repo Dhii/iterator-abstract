@@ -38,8 +38,9 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      */
     protected function _construct()
     {
-        $this->_resetParents();
         parent::_construct();
+
+        $this->_resetParents();
     }
 
     /**
