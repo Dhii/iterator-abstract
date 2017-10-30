@@ -38,9 +38,9 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      */
     protected function _construct()
     {
-        parent::_construct();
-
         $this->_resetParents();
+
+        parent::_construct();
     }
 
     /**
@@ -79,7 +79,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
 
     /**
      * Adds an iterable parent onto the stack.
-     * 
+     *
      * The stack is there to maintain a trace of hierarchy.
      *
      * @since [*next-version*]
