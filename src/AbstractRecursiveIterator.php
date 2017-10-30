@@ -329,9 +329,11 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
     abstract protected function _getElementPathSegment($key, $value);
 
     /**
-     * {@inheritdoc}
+     * Creates a new iteration.
      *
      * @since [*next-version*]
+     *
+     * @return IterationInterface The new iteration.
      */
     protected function _createIteration($key, $value, $pathSegments = [])
     {
