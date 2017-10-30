@@ -2,6 +2,9 @@
 
 namespace Dhii\Iterator\UnitTest;
 
+use Dhii\Iterator\IterationInterface;
+use PHPUnit_Framework_MockObject_MockObject;
+use stdClass;
 use Xpmock\TestCase;
 
 /**
@@ -23,24 +26,47 @@ class AbstractIteratorTest extends TestCase
      *
      * @since [*next-version*]
      *
-     * @return \Dhii\Iterator\AbstractIterator
+     * @return PHPUnit_Framework_MockObject_MockObject
      */
-    public function createInstance($data = array(), $key = null)
+    public function createInstance(array $methods = [])
     {
-        $mock = $this->mock(static::TEST_SUBJECT_CLASSNAME)
-                ->_key(function () use ($key) {
-                    return $key;
-                })
-                ->_value()
-                ->_getIteration()
-                ->_setIteration()
-                ->_createIteration()
-                ->_getCurrentIterable(function &() use (&$data) {
-                    return $data;
-                })
-                ->new();
+        $builder = $this->getMockBuilder(static::TEST_SUBJECT_CLASSNAME)
+                        ->setMethods(
+                            array_merge(
+                                [
+                                    '_getIteration',
+                                    '_setIteration',
+                                    '_nextIteration',
+                                    '_resetIteration',
+                                ],
+                                $methods
+                            )
+                        );
 
-        return $mock;
+        return $builder->getMockForAbstractClass();
+    }
+
+    /**
+     * Creates a new iteration mock instance.
+     *
+     * @since [*next-version*]
+     *
+     * @param string $key   The iteration key.
+     * @param mixed  $value The iteration value.
+     *
+     * @return PHPUnit_Framework_MockObject_MockObject
+     */
+    public function createIteration($key, $value)
+    {
+        $builder = $this->getMockBuilder('Dhii\Iterator\IterationInterface')
+                        ->setMethods(
+                            [
+                                'getKey',
+                                'getValue',
+                            ]
+                        );
+
+        return $builder->getMockForAbstractClass();
     }
 
     /**
@@ -53,8 +79,102 @@ class AbstractIteratorTest extends TestCase
         $subject = $this->createInstance();
 
         $this->assertInstanceOf(
-            static::TEST_SUBJECT_CLASSNAME, $subject, 'Subject is not a valid instance.'
+            static::TEST_SUBJECT_CLASSNAME,
+            $subject,
+            'Subject is not a valid instance.'
         );
+    }
+
+    /**
+     * Tests the rewind method to ensure that the reset iteration method is invoked and the iteration is updated.
+     *
+     * @since [*next-version*]
+     */
+    public function testRewind()
+    {
+        $subject   = $this->createInstance();
+        $reflect   = $this->reflect($subject);
+        $iteration = $this->createIteration(uniqid('key-'), new stdClass());
+
+        $subject->expects($this->once())
+                ->method('_reset')
+                ->willReturn($iteration);
+
+        $subject->expects($this->once())
+                ->method('_setIteration')
+                ->with($iteration);
+
+        $reflect->_rewind();
+    }
+
+    /**
+     * Tests the next method to ensure that the next iteration method is invoked and the iteration is updated.
+     *
+     * @since [*next-version*]
+     */
+    public function testNext()
+    {
+        $subject   = $this->createInstance();
+        $reflect   = $this->reflect($subject);
+        $iteration = $this->createIteration(uniqid('key-'), new stdClass());
+
+        $subject->expects($this->once())
+                ->method('_loop')
+                ->willReturn($iteration);
+
+        $subject->expects($this->once())
+                ->method('_setIteration')
+                ->with($iteration);
+
+        $reflect->_next();
+    }
+
+    /**
+     * Tests the key method to ensure that the iteration key is returned.
+     *
+     * @since [*next-version*]
+     */
+    public function testKey()
+    {
+        $subject   = $this->createInstance();
+        $reflect   = $this->reflect($subject);
+        $iterKey   = uniqid('key-');
+        $iterValue = new stdClass();
+        $iteration = $this->createIteration($iterKey, $iterValue);
+
+        $iteration->expects($this->once())
+                  ->method('getKey')
+                  ->willReturn($iterKey);
+
+        $subject->expects($this->once())
+                ->method('_getIteration')
+                ->willReturn($iteration);
+
+        $this->assertEquals($iterKey, $reflect->_key(), 'Expected and retrieved keys are not the same.');
+    }
+
+    /**
+     * Tests the value method to ensure that the iteration value is returned.
+     *
+     * @since [*next-version*]
+     */
+    public function testValue()
+    {
+        $subject   = $this->createInstance();
+        $reflect   = $this->reflect($subject);
+        $iterKey   = uniqid('key-');
+        $iterValue = new stdClass();
+        $iteration = $this->createIteration($iterKey, $iterValue);
+
+        $iteration->expects($this->once())
+                  ->method('getValue')
+                  ->willReturn($iterValue);
+
+        $subject->expects($this->once())
+                ->method('_getIteration')
+                ->willReturn($iteration);
+
+        $this->assertEquals($iterValue, $reflect->_value(), 'Expected and retrieved keys are not the same.');
     }
 
     /**
@@ -64,12 +184,15 @@ class AbstractIteratorTest extends TestCase
      */
     public function testValid()
     {
-        $subject = $this->createInstance(array(), uniqid('key-'));
-        $_subject = $this->reflect($subject);
+        $subject = $this->createInstance(['_key']);
+        $reflect = $this->reflect($subject);
+        $iterKey = uniqid('key-');
 
-        $result = $_subject->_valid();
+        $subject->expects($this->once())
+                ->method('_key')
+                ->willReturn($iterKey);
 
-        $this->assertTrue($result, 'Subject wrongly determined to be invalid');
+        $this->assertTrue($reflect->_valid(), 'Subject wrongly determined to be invalid');
     }
 
     /**
@@ -79,11 +202,13 @@ class AbstractIteratorTest extends TestCase
      */
     public function testNotValid()
     {
-        $subject = $this->createInstance(array(), null);
-        $_subject = $this->reflect($subject);
+        $subject = $this->createInstance(['_key']);
+        $reflect = $this->reflect($subject);
 
-        $result = $_subject->_valid();
+        $subject->expects($this->once())
+                ->method('_key')
+                ->willReturn(null);
 
-        $this->assertFalse($result, 'Subject wrongly determined to be valid');
+        $this->assertFalse($reflect->_valid(), 'Subject wrongly determined to be valid');
     }
 }

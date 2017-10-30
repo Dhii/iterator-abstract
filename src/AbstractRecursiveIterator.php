@@ -39,6 +39,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
     protected function _construct()
     {
         $this->_resetParents();
+
         parent::_construct();
     }
 
@@ -78,7 +79,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
 
     /**
      * Adds an iterable parent onto the stack.
-     * 
+     *
      * The stack is there to maintain a trace of hierarchy.
      *
      * @since [*next-version*]
@@ -329,9 +330,11 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
     abstract protected function _getElementPathSegment($key, $value);
 
     /**
-     * {@inheritdoc}
+     * Creates a new iteration.
      *
      * @since [*next-version*]
+     *
+     * @return IterationInterface The new iteration.
      */
     protected function _createIteration($key, $value, $pathSegments = [])
     {

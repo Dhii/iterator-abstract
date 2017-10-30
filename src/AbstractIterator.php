@@ -2,10 +2,8 @@
 
 namespace Dhii\Iterator;
 
-use InvalidArgumentException;
-use Iterator;
 use Dhii\Iterator\Exception\IteratingExceptionInterface;
-use Traversable;
+use Iterator;
 
 /**
  * Common functionality for iterators.
@@ -26,9 +24,23 @@ abstract class AbstractIterator
     }
 
     /**
+     * Resets the iterator.
+     *
+     * @since [*next-version*]
+     * @see   Iterator::rewind()
+     */
+    protected function _rewind()
+    {
+        $this->_setIteration($this->_reset());
+
+        return $this;
+    }
+
+    /**
      * Advances the iterator to the next element.
      *
      * @since [*next-version*]
+     * @see   Iterator::next()
      *
      * @throws IteratingExceptionInterface If advancing is not possible.
      */
@@ -40,45 +52,10 @@ abstract class AbstractIterator
     }
 
     /**
-     * Advances the iterator and computes the new state.
-     *
-     * @since [*next-version*]
-     *
-     * @return IterationInterface The iteration that represents the new state.
-     */
-    protected function _loop()
-    {
-    }
-
-    /**
-     * Computes a reset state.
-     *
-     * @since [*next-version*]
-     *
-     * @return IterationInterface The iteration that represents the new state.
-     */
-    protected function _reset()
-    {
-    }
-
-    /**
-     * Resets the iterator.
-     *
-     * @see Iterator::rewind()
-     * @since [*next-version*]
-     */
-    protected function _rewind()
-    {
-        $this->_setIteration($this->_reset());
-
-        return $this;
-    }
-
-    /**
      * Retrieves the key of the current iteration.
      *
      * @since [*next-version*]
-     * @see Iterator::key()
+     * @see   Iterator::key()
      * @since [*next-version*]
      *
      * @return string|null The key, if iterating; otherwise, null.
@@ -92,7 +69,7 @@ abstract class AbstractIterator
      * Retrieves the value of the current iteration.
      *
      * @since [*next-version*]
-     * @see Iterator::current()
+     * @see   Iterator::current()
      *
      * @return mixed The value.
      */
@@ -105,7 +82,7 @@ abstract class AbstractIterator
      * Determines whether the current state of the iterator is valid.
      *
      * @since [*next-version*]
-     * @see Iterator::valid()
+     * @see   Iterator::valid()
      *
      * @return bool True if current state is valid; false otherwise;
      */
@@ -129,28 +106,26 @@ abstract class AbstractIterator
      * Assigns an iteration to this instance.
      *
      * @since [*next-version*]
-     * 
+     *
      * @param IterationInterface|null $iteration The iteration to set.
-     *
-     * @throws InvalidArgumentException If not a valid iteration
      */
-    abstract protected function _setIteration(IterationInterface $iteration = null);
+    abstract protected function _setIteration($iteration);
 
     /**
-     * Creates a new iteration.
+     * Computes a reset state.
      *
      * @since [*next-version*]
      *
-     * @return IterationInterface The new iteration.
+     * @return IterationInterface The iteration that represents the new state.
      */
-    abstract protected function _createIteration($key, $value);
+    abstract protected function _reset();
 
     /**
-     * Retrieves the iterable that this iterator should be iterating over.
+     * Advances the iterator and computes the new state.
      *
      * @since [*next-version*]
      *
-     * @return Traversable|array The iterable.
+     * @return IterationInterface The iteration that represents the new state.
      */
-    abstract protected function &_getCurrentIterable();
+    abstract protected function _loop();
 }
