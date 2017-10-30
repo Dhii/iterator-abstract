@@ -2,9 +2,8 @@
 
 namespace Dhii\Iterator;
 
-use InvalidArgumentException;
-use Iterator;
 use Dhii\Iterator\Exception\IteratingExceptionInterface;
+use Iterator;
 
 /**
  * Common functionality for iterators.
