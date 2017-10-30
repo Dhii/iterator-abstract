@@ -97,7 +97,7 @@ class AbstractIteratorTest extends TestCase
         $iteration = $this->createIteration(uniqid('key-'), new stdClass());
 
         $subject->expects($this->once())
-                ->method('_resetIteration')
+                ->method('_reset')
                 ->willReturn($iteration);
 
         $subject->expects($this->once())
@@ -119,7 +119,7 @@ class AbstractIteratorTest extends TestCase
         $iteration = $this->createIteration(uniqid('key-'), new stdClass());
 
         $subject->expects($this->once())
-                ->method('_nextIteration')
+                ->method('_loop')
                 ->willReturn($iteration);
 
         $subject->expects($this->once())

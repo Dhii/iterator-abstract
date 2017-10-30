@@ -176,7 +176,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      *
      * @since [*next-version*]
      */
-    protected function _nextIteration()
+    protected function _loop()
     {
         // Ensure that there are items on the stack
         if (!$this->_hasParents()) {
@@ -207,7 +207,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
             return $current;
         }
 
-        return $this->_nextIteration();
+        return $this->_loop();
     }
 
     /**
@@ -233,7 +233,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
             return $current;
         }
 
-        return $this->_nextIteration();
+        return $this->_loop();
     }
 
     /**
@@ -241,12 +241,12 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      *
      * @since [*next-version*]
      */
-    protected function _resetIteration()
+    protected function _reset()
     {
         $this->_resetParents();
         $this->_pushParent($this->_getInitialParentIterable());
 
-        return $this->_nextIteration();
+        return $this->_loop();
     }
 
     /**
