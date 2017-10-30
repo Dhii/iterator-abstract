@@ -40,28 +40,6 @@ abstract class AbstractIterator
     }
 
     /**
-     * Advances the iterator and computes the new state.
-     *
-     * @since [*next-version*]
-     *
-     * @return IterationInterface The iteration that represents the new state.
-     */
-    protected function _loop()
-    {
-    }
-
-    /**
-     * Computes a reset state.
-     *
-     * @since [*next-version*]
-     *
-     * @return IterationInterface The iteration that represents the new state.
-     */
-    protected function _reset()
-    {
-    }
-
-    /**
      * Resets the iterator.
      *
      * @see Iterator::rewind()
@@ -135,4 +113,22 @@ abstract class AbstractIterator
      * @throws InvalidArgumentException If not a valid iteration
      */
     abstract protected function _setIteration(IterationInterface $iteration = null);
+
+    /**
+     * Computes a reset state.
+     *
+     * @since [*next-version*]
+     *
+     * @return IterationInterface The iteration that represents the new state.
+     */
+    abstract protected function _reset();
+
+    /**
+     * Advances the iterator and computes the new state.
+     *
+     * @since [*next-version*]
+     *
+     * @return IterationInterface The iteration that represents the new state.
+     */
+    abstract protected function _loop();
 }
