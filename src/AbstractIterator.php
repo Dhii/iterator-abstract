@@ -32,7 +32,7 @@ abstract class AbstractIterator
      */
     protected function _rewind()
     {
-        $this->_setIteration($this->_reset());
+        $this->_setIteration($this->_resetIteration());
 
         return $this;
     }
@@ -47,7 +47,7 @@ abstract class AbstractIterator
      */
     protected function _next()
     {
-        $this->_setIteration($this->_loop());
+        $this->_setIteration($this->_nextIteration());
 
         return $this;
     }
@@ -121,7 +121,7 @@ abstract class AbstractIterator
      *
      * @return IterationInterface The iteration that represents the new state.
      */
-    abstract protected function _reset();
+    abstract protected function _resetIteration();
 
     /**
      * Advances the iterator and computes the new state.
@@ -130,5 +130,5 @@ abstract class AbstractIterator
      *
      * @return IterationInterface The iteration that represents the new state.
      */
-    abstract protected function _loop();
+    abstract protected function _nextIteration();
 }
