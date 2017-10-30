@@ -135,22 +135,4 @@ abstract class AbstractIterator
      * @throws InvalidArgumentException If not a valid iteration
      */
     abstract protected function _setIteration(IterationInterface $iteration = null);
-
-    /**
-     * Creates a new iteration.
-     *
-     * @since [*next-version*]
-     *
-     * @return IterationInterface The new iteration.
-     */
-    abstract protected function _createIteration($key, $value);
-
-    /**
-     * Retrieves the iterable that this iterator should be iterating over.
-     *
-     * @since [*next-version*]
-     *
-     * @return Traversable|array The iterable.
-     */
-    abstract protected function &_getCurrentIterable();
 }
