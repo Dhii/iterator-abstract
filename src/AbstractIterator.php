@@ -109,10 +109,8 @@ abstract class AbstractIterator
      * @since [*next-version*]
      *
      * @param IterationInterface|null $iteration The iteration to set.
-     *
-     * @throws InvalidArgumentException If not a valid iteration
      */
-    abstract protected function _setIteration(IterationInterface $iteration = null);
+    abstract protected function _setIteration($iteration);
 
     /**
      * Computes a reset state.
