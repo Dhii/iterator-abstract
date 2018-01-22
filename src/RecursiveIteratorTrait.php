@@ -139,7 +139,7 @@ trait RecursiveIteratorTrait
     protected function _pushParent(&$parent)
     {
         $children = &$this->_getElementChildren($parent);
-        $pathSegment = $this->_getElementPathSegment('', $parent);
+        $pathSegment = $this->_getElementPathSegment(null, $parent);
 
         $this->_pushPathSegment($pathSegment);
 
@@ -334,8 +334,8 @@ trait RecursiveIteratorTrait
      *
      * @since [*next-version*]
      *
-     * @param string|int $key   The element key.
-     * @param mixed      $value The element value.
+     * @param string|int|null $key   The element key.
+     * @param mixed           $value The element value.
      *
      * @return string|null The path segment string or null for no path segment.
      */
