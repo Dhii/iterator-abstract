@@ -139,7 +139,7 @@ trait RecursiveIteratorTrait
     protected function _pushParent(&$parent)
     {
         $children = &$this->_getElementChildren($parent);
-        $pathSegment = $this->_getElementPathSegment(null, $parent);
+        $pathSegment = $this->_getElementPathSegment('', $parent);
 
         $this->_pushPathSegment($pathSegment);
 
