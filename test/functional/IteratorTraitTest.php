@@ -2,31 +2,33 @@
 
 namespace Dhii\Iterator\UnitTest;
 
-use Dhii\Iterator\IterationInterface;
-use PHPUnit_Framework_MockObject_MockObject;
+use Dhii\Iterator\IteratorTrait as TestSubject;
+use PHPUnit_Framework_MockObject_MockObject as MockObject;
 use stdClass;
 use Xpmock\TestCase;
 
 /**
- * Tests {@see \Dhii\Iterator\AbstractIterator}.
+ * Tests {@see TestSubject}.
  *
  * @since [*next-version*]
  */
-class AbstractIteratorTest extends TestCase
+class IteratorTraitTest extends TestCase
 {
     /**
      * The name of the test subject.
      *
      * @since [*next-version*]
      */
-    const TEST_SUBJECT_CLASSNAME = 'Dhii\\Iterator\\AbstractIterator';
+    const TEST_SUBJECT_CLASSNAME = 'Dhii\\Iterator\\IteratorTrait';
 
     /**
      * Creates a new instance of the test subject.
      *
      * @since [*next-version*]
      *
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @param string[] $methods Additional methods to mock.
+     *
+     * @return MockObject
      */
     public function createInstance(array $methods = [])
     {
@@ -43,7 +45,7 @@ class AbstractIteratorTest extends TestCase
                             )
                         );
 
-        return $builder->getMockForAbstractClass();
+        return $builder->getMockForTrait();
     }
 
     /**
@@ -54,7 +56,7 @@ class AbstractIteratorTest extends TestCase
      * @param string $key   The iteration key.
      * @param mixed  $value The iteration value.
      *
-     * @return PHPUnit_Framework_MockObject_MockObject
+     * @return MockObject
      */
     public function createIteration($key, $value)
     {
@@ -78,8 +80,8 @@ class AbstractIteratorTest extends TestCase
     {
         $subject = $this->createInstance();
 
-        $this->assertInstanceOf(
-            static::TEST_SUBJECT_CLASSNAME,
+        $this->assertInternalType(
+            'object',
             $subject,
             'Subject is not a valid instance.'
         );
