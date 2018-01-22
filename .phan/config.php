@@ -1,7 +1,5 @@
 <?php
 
-require_once( __DIR__ . '/../vendor/autoload.php');
-
 /**
  * This configuration will be read and overlaid on top of the
  * default configuration. Command line arguments will be applied
