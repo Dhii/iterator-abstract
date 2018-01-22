@@ -3,15 +3,16 @@
 namespace Dhii\Iterator;
 
 use Dhii\Iterator\RecursiveIteratorInterface as R;
+use Dhii\Util\String\StringableInterface as Stringable;
 use Iterator;
 use Traversable;
 
 /**
- * Common functionality for iterators which visit nodes more than 1 level deep.
+ * Common functionality for objects that can iterate recursively.
  *
  * @since [*next-version*]
  */
-abstract class AbstractRecursiveIterator extends AbstractIterator
+trait RecursiveIteratorTrait
 {
     /**
      * The stack of parents needed to maintain hierarchy path trace.
@@ -32,49 +33,98 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
     protected $pathSegments;
 
     /**
-     * Resets the values.
+     * Computes a reset state.
      *
      * @since [*next-version*]
+     *
+     * @return IterationInterface The iteration that represents the new state.
      */
-    protected function _construct()
+    protected function _reset()
     {
         $this->_resetParents();
+        $this->_pushParent($this->_getInitialParentIterable());
 
-        parent::_construct();
+        return $this->_loop();
     }
 
     /**
-     * Retrieves the current path segments.
+     * Advances the iterator and computes the new state.
      *
      * @since [*next-version*]
      *
-     * @return array
+     * @return IterationInterface The iteration that represents the new state.
      */
-    protected function _getPathSegments()
+    protected function _loop()
     {
-        return $this->pathSegments;
+        // Ensure that there are items on the stack
+        if (!$this->_hasParents()) {
+            return $this->_createIteration(null, null);
+        }
+
+        // Get current top item on the stack and its current iteration entry
+        $parent = &$this->_getCurrentIterable();
+        $current = $this->_createCurrentIteration($parent);
+
+        // Reached end of current iterable
+        if ($current->getKey() === null) {
+            return $this->_backtrackLoop();
+        }
+
+        // Element is a leaf
+        if (!$this->_isElementHasChildren($current->getValue())) {
+            next($parent);
+
+            return $current;
+        }
+
+        // Element is not a leaf; push to stack
+        $children = $current->getValue();
+        $this->_pushParent($children);
+
+        if ($this->_isMode(R::MODE_SELF_FIRST)) {
+            return $current;
+        }
+
+        return $this->_loop();
     }
 
     /**
-     * Pushes a path segment to the path stack.
+     * Backtracks up one parent, yielding the parent or resuming the loop, whichever is appropriate.
      *
      * @since [*next-version*]
      *
-     * @param string $segment The path segment to add.
+     * @return IterationInterface
      */
-    protected function _pushPathSegment($segment)
+    protected function _backtrackLoop()
     {
-        array_push($this->pathSegments, $segment);
+        $this->_popParent();
+
+        if (!$this->_hasParents()) {
+            return $this->_createIteration(null, null);
+        }
+
+        $parent = &$this->_getCurrentIterable();
+        $current = $this->_createCurrentIteration($parent);
+        next($parent);
+
+        if ($this->_isMode(R::MODE_CHILD_FIRST)) {
+            return $current;
+        }
+
+        return $this->_loop();
     }
 
     /**
-     * Removes the last added path segment from the path stack.
+     * Determines whether the current state of the iterator is valid.
      *
      * @since [*next-version*]
+     * @see   Iterator::valid()
+     *
+     * @return bool True if current state is valid; false otherwise;
      */
-    protected function _popPathSegment()
+    protected function _valid()
     {
-        array_pop($this->pathSegments);
+        return $this->_hasParents();
     }
 
     /**
@@ -88,7 +138,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      */
     protected function _pushParent(&$parent)
     {
-        $children    = &$this->_getElementChildren($parent);
+        $children = &$this->_getElementChildren($parent);
         $pathSegment = $this->_getElementPathSegment(null, $parent);
 
         $this->_pushPathSegment($pathSegment);
@@ -132,7 +182,7 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      */
     protected function _resetParents()
     {
-        $this->parents      = [];
+        $this->parents = [];
         $this->pathSegments = [];
 
         return $this;
@@ -158,6 +208,40 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
     }
 
     /**
+     * Retrieves the current path segments.
+     *
+     * @since [*next-version*]
+     *
+     * @return array
+     */
+    protected function _getPathSegments()
+    {
+        return $this->pathSegments;
+    }
+
+    /**
+     * Pushes a path segment to the path stack.
+     *
+     * @since [*next-version*]
+     *
+     * @param string $segment The path segment to add.
+     */
+    protected function _pushPathSegment($segment)
+    {
+        array_push($this->pathSegments, $segment);
+    }
+
+    /**
+     * Removes the last added path segment from the path stack.
+     *
+     * @since [*next-version*]
+     */
+    protected function _popPathSegment()
+    {
+        array_pop($this->pathSegments);
+    }
+
+    /**
      * Retrieves the iterable that this iterator should be iterating over.
      *
      * @since [*next-version*]
@@ -172,94 +256,6 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
     }
 
     /**
-     * {@inheritdoc}
-     *
-     * @since [*next-version*]
-     */
-    protected function _loop()
-    {
-        // Ensure that there are items on the stack
-        if (!$this->_hasParents()) {
-            return $this->_createIteration(null, null);
-        }
-
-        // Get current top item on the stack and its current iteration entry
-        $parent  = &$this->_getCurrentIterable();
-        $current = $this->_createCurrentIteration($parent);
-
-        // Reached end of current iterable
-        if ($current->getKey() === null) {
-            return $this->_backtrackLoop();
-        }
-
-        // Element is a leaf
-        if (!$this->_isElementHasChildren($current->getValue())) {
-            next($parent);
-
-            return $current;
-        }
-
-        // Element is not a leaf; push to stack
-        $children = $current->getValue();
-        $this->_pushParent($children);
-
-        if ($this->_isMode(R::MODE_SELF_FIRST)) {
-            return $current;
-        }
-
-        return $this->_loop();
-    }
-
-    /**
-     * Backtracks up one parent, yielding the parent or resuming the loop, whichever is appropriate.
-     *
-     * @since [*next-version*]
-     *
-     * @return IterationInterface
-     */
-    protected function _backtrackLoop()
-    {
-        $this->_popParent();
-
-        if (!$this->_hasParents()) {
-            return $this->_createIteration(null, null);
-        }
-
-        $parent  = &$this->_getCurrentIterable();
-        $current = $this->_createCurrentIteration($parent);
-        next($parent);
-
-        if ($this->_isMode(R::MODE_CHILD_FIRST)) {
-            return $current;
-        }
-
-        return $this->_loop();
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @since [*next-version*]
-     */
-    protected function _reset()
-    {
-        $this->_resetParents();
-        $this->_pushParent($this->_getInitialParentIterable());
-
-        return $this->_loop();
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @since [*next-version*]
-     */
-    protected function _valid()
-    {
-        return $this->_hasParents();
-    }
-
-    /**
      * Creates an iteration instance for the current state of a given iterable.
      *
      * @since [*next-version*]
@@ -270,8 +266,8 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      */
     protected function _createCurrentIteration(&$iterable)
     {
-        $key  = $this->_getCurrentIterableKey($iterable);
-        $val  = $this->_getCurrentIterableValue($iterable);
+        $key = $this->_getCurrentIterableKey($iterable);
+        $val = $this->_getCurrentIterableValue($iterable);
         $path = $this->_getCurrentPath($key, $val);
 
         return $this->_createIteration($key, $val, $path);
@@ -289,10 +285,26 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      */
     protected function _getCurrentPath($key, $value)
     {
-        $path   = $this->_getPathSegments();
+        $path = $this->_getPathSegments();
         $path[] = $this->_getElementPathSegment($key, $value);
 
         return array_filter($path);
+    }
+
+    /**
+     * Creates a new iteration.
+     *
+     * @since [*next-version*]
+     *
+     * @param string|Stringable|null $key          The iteration key, if any.
+     * @param mixed|null             $value        The iteration value, if any.
+     * @param string[]|Stringable[]  $pathSegments The segments that make up the path to this iteration.
+     *
+     * @return IterationInterface The new iteration.
+     */
+    protected function _createIteration($key, $value, $pathSegments = [])
+    {
+        return $this->_createRecursiveIteration($key, $value, $pathSegments);
     }
 
     /**
@@ -322,24 +334,12 @@ abstract class AbstractRecursiveIterator extends AbstractIterator
      *
      * @since [*next-version*]
      *
-     * @param string|int $key   The element key.
-     * @param mixed      $value The element value.
+     * @param string|int|null $key   The element key.
+     * @param mixed           $value The element value.
      *
      * @return string|null The path segment string or null for no path segment.
      */
     abstract protected function _getElementPathSegment($key, $value);
-
-    /**
-     * Creates a new iteration.
-     *
-     * @since [*next-version*]
-     *
-     * @return IterationInterface The new iteration.
-     */
-    protected function _createIteration($key, $value, $pathSegments = [])
-    {
-        return $this->_createRecursiveIteration($key, $value, $pathSegments);
-    }
 
     /**
      * Creates a new iteration.
