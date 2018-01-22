@@ -1,5 +1,5 @@
 ---
-engines:
+plugins:
   duplication:
     enabled: true
     config:
@@ -13,9 +13,16 @@ engines:
       file_extensions:
         - php
       rulesets: "phpmd.xml"
+  phan:
+    enabled: true
+    config:
+      file_extensions: "php"
+
 ratings:
   paths:
   - "**.inc"
   - "**.php"
 exclude_paths:
 - test/
+- .phan/
+- vendor/
