@@ -296,9 +296,9 @@ trait RecursiveIteratorTrait
      *
      * @since [*next-version*]
      *
-     * @param string|Stringable     $key          The iteration key.
-     * @param mixed                 $value        The iteration value.
-     * @param string[]|Stringable[] $pathSegments The segments that make up the path to this iteration.
+     * @param string|Stringable|null $key          The iteration key, if any.
+     * @param mixed|null             $value        The iteration value, if any.
+     * @param string[]|Stringable[]  $pathSegments The segments that make up the path to this iteration.
      *
      * @return IterationInterface The new iteration.
      */
