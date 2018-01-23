@@ -108,5 +108,5 @@ trait IteratorTrait
      *
      * @param IterationInterface|null $iteration The iteration to set.
      */
-    abstract protected function _setIteration($iteration);
+    abstract protected function _setIteration(IterationInterface $iteration = null);
 }
