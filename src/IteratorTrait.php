@@ -2,7 +2,9 @@
 
 namespace Dhii\Iterator;
 
-use Dhii\Iterator\Exception\IteratingExceptionInterface;
+use Dhii\Iterator\Exception\IteratorExceptionInterface;
+use Dhii\Util\String\StringableInterface as Stringable;
+use Exception as RootException;
 
 /**
  * Common functionality for objects that can iterate.
@@ -19,7 +21,15 @@ trait IteratorTrait
      */
     protected function _rewind()
     {
-        $this->_setIteration($this->_reset());
+        try {
+            $this->_setIteration($this->_reset());
+        } catch (RootException $exception) {
+            $this->_throwIteratorException(
+                $this->__('An error occurred while rewinding'),
+                null,
+                $exception
+            );
+        }
     }
 
     /**
@@ -28,11 +38,19 @@ trait IteratorTrait
      * @since [*next-version*]
      * @see Iterator::next()
      *
-     * @throws IteratingExceptionInterface If advancing is not possible.
+     * @throws IteratorExceptionInterface If an error occurred during iteration.
      */
     protected function _next()
     {
-        $this->_setIteration($this->_loop());
+        try {
+            $this->_setIteration($this->_loop());
+        } catch (RootException $exception) {
+            $this->_throwIteratorException(
+                $this->__('An error occurred while iterating'),
+                null,
+                $exception
+            );
+        }
     }
 
     /**
@@ -109,4 +127,35 @@ trait IteratorTrait
      * @param IterationInterface|null $iteration The iteration to set.
      */
     abstract protected function _setIteration(IterationInterface $iteration = null);
+
+    /**
+     * Throws a new iterator exception.
+     *
+     * @since [*next-version*]
+     *
+     * @param string|Stringable|null $message  The error message, if any.
+     * @param int|null               $code     The error code, if any.
+     * @param RootException|null     $previous The inner exception for chaining, if any.
+     *
+     * @return IteratorExceptionInterface The created exception.
+     */
+    abstract protected function _throwIteratorException(
+        $message = null,
+        $code = null,
+        RootException $previous = null
+    );
+
+    /**
+     * Translates a string, and replaces placeholders.
+     *
+     * @since [*next-version*]
+     * @see   sprintf()
+     *
+     * @param string $string  The format string to translate.
+     * @param array  $args    Placeholder values to replace in the string.
+     * @param mixed  $context The context for translation.
+     *
+     * @return string The translated string.
+     */
+    abstract protected function __($string, $args = [], $context = null);
 }
