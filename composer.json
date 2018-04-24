@@ -1,6 +1,6 @@
 {
     "name": "dhii/iterator-abstract",
-    "description": "",
+    "description": "Functionality for iterators that comply with dhii/iterator-interface, or are otherwise based on iteration objects",
     "type": "library",
     "license": "MIT",
     "authors": [
