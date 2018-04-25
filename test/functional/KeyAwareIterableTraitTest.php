@@ -36,7 +36,7 @@ class KeyAwareIterableTraitTest extends TestCase
 
         $mock->method('_getCurrentIterableValue')
              ->willReturnCallback(
-                 function(&$iterable) {
+                 function (&$iterable) {
                      return current($iterable);
                  }
              );
@@ -102,7 +102,7 @@ class KeyAwareIterableTraitTest extends TestCase
                 $subject,
                 [
                     'some-key', // key
-                    $keyAware  // value
+                    $keyAware,  // value
                 ]
             )
         );
@@ -114,7 +114,7 @@ class KeyAwareIterableTraitTest extends TestCase
                 $subject,
                 [
                     $fallbackKey,           // key
-                    'no-a-key-aware-object' // value
+                    'no-a-key-aware-object', // value
                 ]
             )
         );
