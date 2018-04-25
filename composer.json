@@ -3,6 +3,7 @@
     "description": "Functionality for iterators that comply with dhii/iterator-interface, or are otherwise based on iteration objects",
     "type": "library",
     "license": "MIT",
+    "keywords": ["iteration", "iterator", "abstract", "trait"],
     "authors": [
         {
             "name": "Dhii Team",
