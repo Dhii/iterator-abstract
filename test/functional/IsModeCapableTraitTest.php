@@ -4,7 +4,6 @@ namespace Dhii\Iterator\FuncTest;
 
 use Dhii\Iterator\IsModeCapableTrait as TestSubject;
 use Xpmock\TestCase;
-use Exception as RootException;
 use PHPUnit_Framework_MockObject_MockObject as MockObject;
 
 /**

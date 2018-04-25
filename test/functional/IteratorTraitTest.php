@@ -94,8 +94,8 @@ class IteratorTraitTest extends TestCase
      */
     public function testRewind()
     {
-        $subject   = $this->createInstance();
-        $reflect   = $this->reflect($subject);
+        $subject = $this->createInstance();
+        $reflect = $this->reflect($subject);
         $iteration = $this->createIteration(uniqid('key-'), new stdClass());
 
         $subject->expects($this->once())
@@ -116,8 +116,8 @@ class IteratorTraitTest extends TestCase
      */
     public function testNext()
     {
-        $subject   = $this->createInstance();
-        $reflect   = $this->reflect($subject);
+        $subject = $this->createInstance();
+        $reflect = $this->reflect($subject);
         $iteration = $this->createIteration(uniqid('key-'), new stdClass());
 
         $subject->expects($this->once())
@@ -138,9 +138,9 @@ class IteratorTraitTest extends TestCase
      */
     public function testKey()
     {
-        $subject   = $this->createInstance();
-        $reflect   = $this->reflect($subject);
-        $iterKey   = uniqid('key-');
+        $subject = $this->createInstance();
+        $reflect = $this->reflect($subject);
+        $iterKey = uniqid('key-');
         $iterValue = new stdClass();
         $iteration = $this->createIteration($iterKey, $iterValue);
 
@@ -162,9 +162,9 @@ class IteratorTraitTest extends TestCase
      */
     public function testValue()
     {
-        $subject   = $this->createInstance();
-        $reflect   = $this->reflect($subject);
-        $iterKey   = uniqid('key-');
+        $subject = $this->createInstance();
+        $reflect = $this->reflect($subject);
+        $iterKey = uniqid('key-');
         $iterValue = new stdClass();
         $iteration = $this->createIteration($iterKey, $iterValue);
 

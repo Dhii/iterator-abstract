@@ -62,7 +62,7 @@ trait RecursiveIteratorTrait
         }
 
         // Get current top item on the stack and its current iteration entry
-        $parent = &$this->_getCurrentIterable();
+        $parent  = &$this->_getCurrentIterable();
         $current = $this->_createCurrentIteration($parent);
 
         // Reached end of current iterable
@@ -103,7 +103,7 @@ trait RecursiveIteratorTrait
             return $this->_createIteration(null, null);
         }
 
-        $parent = &$this->_getCurrentIterable();
+        $parent  = &$this->_getCurrentIterable();
         $current = $this->_createCurrentIteration($parent);
         next($parent);
 
@@ -138,7 +138,7 @@ trait RecursiveIteratorTrait
      */
     protected function _pushParent(&$parent)
     {
-        $children = &$this->_getElementChildren($parent);
+        $children    = &$this->_getElementChildren($parent);
         $pathSegment = $this->_getElementPathSegment(null, $parent);
 
         $this->_pushPathSegment($pathSegment);
@@ -182,7 +182,7 @@ trait RecursiveIteratorTrait
      */
     protected function _resetParents()
     {
-        $this->parents = [];
+        $this->parents      = [];
         $this->pathSegments = [];
 
         return $this;
@@ -266,8 +266,8 @@ trait RecursiveIteratorTrait
      */
     protected function _createCurrentIteration(&$iterable)
     {
-        $key = $this->_getCurrentIterableKey($iterable);
-        $val = $this->_getCurrentIterableValue($iterable);
+        $key  = $this->_getCurrentIterableKey($iterable);
+        $val  = $this->_getCurrentIterableValue($iterable);
         $path = $this->_getCurrentPath($key, $val);
 
         return $this->_createIteration($key, $val, $path);
@@ -285,7 +285,7 @@ trait RecursiveIteratorTrait
      */
     protected function _getCurrentPath($key, $value)
     {
-        $path = $this->_getPathSegments();
+        $path   = $this->_getPathSegments();
         $path[] = $this->_getElementPathSegment($key, $value);
 
         return array_filter($path);
