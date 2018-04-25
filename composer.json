@@ -29,8 +29,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Dhii\\Iterator\\UnitTest": "test/unit",
-            "Dhii\\Iterator\\FuncTest": "test/functional"
+            "Dhii\\Iterator\\UnitTest\\": "test/unit",
+            "Dhii\\Iterator\\FuncTest\\": "test/functional"
         }
     },
     "scripts": {
